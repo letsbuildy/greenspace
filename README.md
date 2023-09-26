@@ -1,2 +1,2 @@
-# plantos
-add for smart gardening
+# greenspace
+backend apps for greenspace project
