@@ -1,4 +1,4 @@
-from flask import Flask,request,jsonify
+from flask import Flask,request,jsonify,Response
 import dbconn
 app= Flask(__name__)
 
@@ -9,7 +9,10 @@ def createUser():
     #username= request.args.get('username')
     cnn =  dbconn.ConnectDB()
     resp = cnn.createuser(mail,pswd)
-    return jsonify({"response":resp})
+    if(resp==0):
+        return {"response":resp},409
+    else:
+        return {"response":resp},201
 
 @app.route('/frgtpswd',methods = ['GET'])
 def frgtpswd():
