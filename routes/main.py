@@ -29,7 +29,10 @@ def login():
     pswd = request.args.get('pswd')
     conn= dbconn.ConnectDB()
     resp = conn.login(mail,pswd)
-    return jsonify({"response": resp})
+    if resp==0:
+        return {"response": resp},409
+    else:
+        return {"UserId": resp},200
 
 
 if __name__ == '__main__':

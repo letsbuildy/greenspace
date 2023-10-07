@@ -45,7 +45,7 @@ class ConnectDB:
 
 #######################################################################################
     def login(self,mail,pswd):
-#if user exist return userid else return 0
+        #if user exist return userid else return 0
         resp=""
         sql = "SELECT USERID FROM USER WHERE EMAILID = %s AND PASSWRD=%s"
         val=(mail,pswd)
@@ -53,8 +53,6 @@ class ConnectDB:
         resp = mycursor.fetchall();
         #mydb.commit()
         if(len(resp)>0):
-            resp = resp[0][0]
+            return resp[0][0]
         else:
-            resp = 0
-        #mydb.close()
-        return resp
+            return 0
