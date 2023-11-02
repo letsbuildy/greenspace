@@ -10,17 +10,19 @@ class ConnectDB:
         database="go_auth_test"
     )
     global mycursor; 
-    mycursor=mydb.cursor()
+    mycursor=mydb.cursor(buffered=True)
 
 ###########################################################################################
     def createuser(self,mail,pswd):
+#if user exist return 0,if newly created return 1       
         resp=""
-        sql_check = "SELECT USERID FROM USER WHERE EXIST(SELECT * FROM USER WHERE EMAILID = %s)"
-        val_check = (mail)
+        sql_check = "SELECT USERID FROM USER WHERE EXISTS (SELECT * FROM USER WHERE EMAILID = %s)"
+        val_check = [mail]
         mycursor.execute(sql_check,val_check)
-        result = mycursor.fetchall()
-        if(result==True):
-            resp= "User Already Exist"
+        result = mycursor.fetchone()
+        print(result)
+        if(result!=None):
+            resp= 0
             return resp
         else:
             sql_create = "INSERT INTO USER (emailid,passwrd) VALUES (%s,%s)"
@@ -29,10 +31,8 @@ class ConnectDB:
             #test = mycursor.fetchall()
             mydb.commit()
             #print("my cursor - ",test)
-            resp= mycursor.rowcount+" user created"
-            # for x in mycursor:
-            #     resp+= x
-            mydb.close()
+            resp= mycursor.rowcount
+        #mydb.close()
         return resp
 #######################################################################################   
     def send_otp(self,mail):
@@ -45,6 +45,7 @@ class ConnectDB:
 
 #######################################################################################
     def login(self,mail,pswd):
+        #if user exist return userid else return 0
         resp=""
         sql = "SELECT USERID FROM USER WHERE EMAILID = %s AND PASSWRD=%s"
         val=(mail,pswd)
@@ -52,8 +53,6 @@ class ConnectDB:
         resp = mycursor.fetchall();
         #mydb.commit()
         if(len(resp)>0):
-            resp = resp[0][0]
+            return resp[0][0]
         else:
-            resp = 0
-        #mydb.close()
-        return resp
+            return 0
